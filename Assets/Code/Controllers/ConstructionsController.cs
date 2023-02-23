@@ -2,6 +2,7 @@
 using Code.Datas;
 using Code.Factories;
 using Code.Views;
+using UnityEngine;
 
 namespace Code.Controllers
 {
@@ -29,6 +30,9 @@ namespace Code.Controllers
                 elements[i].Construction.ChangeColliderState(false);
                 elements[i].ChangeColor(_constructionData.HitColor);
             }
+
+            elements[0].Construction.AddForce(elements[1].transform.position);
+            elements[1].Construction.AddForce(elements[0].transform.position);
         }
     }
 }

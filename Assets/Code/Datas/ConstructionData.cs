@@ -15,6 +15,10 @@ namespace Code.Datas
         [field: SerializeField] public Color HitColor { get; private set; } = Color.red;
 
         public Vector3Int Size => _size;
+        public float MinForce => 80;
+        public float MaxForce => 120;
+        public float DistanceForActivateCollider => 5;
+        public int RotationSpeed => 100;
 
         private void OnValidate()
         {

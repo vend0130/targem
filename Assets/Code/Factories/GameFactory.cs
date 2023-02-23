@@ -45,7 +45,7 @@ namespace Code.Factories
             List<ElementView> elements = CreateElements(construction);
 
             ConstructionView constructionView = construction.gameObject.AddComponent<ConstructionView>();
-            constructionView.Init(elements, _target, _constructionData.Speed);
+            constructionView.Init(elements, _target, _constructionData.Speed, _constructionData);
 
             Constructions.Add(constructionView);
         }
