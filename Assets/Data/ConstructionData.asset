@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e23eeb5bb6c4260b18dbb0f25059443, type: 3}
   m_Name: ConstructionData
   m_EditorClassIdentifier: 
-  <Speed>k__BackingField: 10
+  <Speed>k__BackingField: 5
   _size: {x: 3, y: 3, z: 3}
   <PrimitiveType>k__BackingField: 3
   <DistanceBetweenElements>k__BackingField: 1
+  <DefaultColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <HitColor>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
