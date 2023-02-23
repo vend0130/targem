@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Code.Data
+namespace Code.Datas
 {
     [CreateAssetMenu(fileName = nameof(GameData),
         menuName = "Static Data/" + nameof(GameData), order = 0)]

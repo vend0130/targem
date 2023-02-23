@@ -1,5 +1,6 @@
-﻿using Code.Data;
-using Code.Factory;
+﻿using Code.Controllers;
+using Code.Datas;
+using Code.Factories;
 using UnityEngine;
 
 namespace Code.Root
@@ -12,9 +13,11 @@ namespace Code.Root
 
         private void Awake()
         {
-            var factory = new GameFactory(_gameData, _constructionData, _targetPoint);
+            GameFactory factory = new GameFactory(_gameData, _constructionData, _targetPoint);
+            ConstructionsController constructionsController = new ConstructionsController(factory, _constructionData);
 
             factory.Create();
+            constructionsController.Init();
         }
     }
 }

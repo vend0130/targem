@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
-using Code.Data;
-using Code.View;
+using Code.Datas;
+using Code.Views;
 using UnityEngine;
 
-namespace Code.Factory
+namespace Code.Factories
 {
     public class GameFactory
     {
+        public List<ConstructionView> Constructions { get; private set; }
+
         private const string PoolName = "Constructions";
         private const string ConstructionName = "Construction";
 
@@ -26,6 +28,7 @@ namespace Code.Factory
         public void Create()
         {
             Transform poolParent = new GameObject(PoolName).transform;
+            Constructions = new List<ConstructionView>(_gameData.NumberConstructionOnScene);
 
             for (int i = 0; i < _gameData.NumberConstructionOnScene; i++)
             {
@@ -43,6 +46,8 @@ namespace Code.Factory
 
             ConstructionView constructionView = construction.gameObject.AddComponent<ConstructionView>();
             constructionView.Init(elements, _target, _constructionData.Speed);
+
+            Constructions.Add(constructionView);
         }
 
         private List<ElementView> CreateElements(Transform prent)
@@ -81,6 +86,7 @@ namespace Code.Factory
             element.name = $"{_constructionData.PrimitiveType}_{position}";
 
             elementView = element.AddComponent<ElementView>();
+            elementView.ChangeColor(_constructionData.DefaultColor);
             return true;
         }
 

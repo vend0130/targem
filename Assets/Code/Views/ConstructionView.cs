@@ -1,36 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-namespace Code.View
+namespace Code.Views
 {
     public class ConstructionView : MonoBehaviour
     {
+        public event Action<ElementView[]> OnCollisionHandler;
+
         private List<ElementView> _elements;
         private Transform _target;
         private Vector3 _force = Vector3.zero;
         private float _speed;
-
-        //note: for test
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _force = Random.insideUnitSphere.normalized * 10;
-            }
-        }
-
-        private void FixedUpdate()
-        {
-            Move();
-        }
 
         public void Init(List<ElementView> elements, Transform target, float speed)
         {
             _elements = elements;
             _target = target;
             _speed = speed;
+
+            foreach (var element in _elements)
+            {
+                element.Init(this);
+                element.CollisionHandler += OnCollision;
+            }
         }
+
+        private void FixedUpdate()
+        {
+            Move();
+            CollisionDetect();
+        }
+
+        private void OnDestroy()
+        {
+            _elements.ForEach(x => x.CollisionHandler -= OnCollision);
+        }
+
+        public void ChangeColliderState(bool value) =>
+            _elements.ForEach(x => x.Collider.enabled = value);
 
         private void Move()
         {
@@ -47,5 +55,11 @@ namespace Code.View
 
             transform.position = Vector3.Lerp(transformPosition, targetPoint, gravityTime);
         }
+
+        private void CollisionDetect() =>
+            _elements.ForEach(x => x.CollisionDetect());
+
+        private void OnCollision(ElementView[] elements) =>
+            OnCollisionHandler?.Invoke(elements);
     }
 }
