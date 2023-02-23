@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e23eeb5bb6c4260b18dbb0f25059443, type: 3}
+  m_Name: ConstructionData
+  m_EditorClassIdentifier: 
+  _size: {x: 3, y: 3, z: 3}
+  <PrimitiveType>k__BackingField: 3
+  <DistanceBetweenElements>k__BackingField: 1
