@@ -1,4 +1,6 @@
-﻿using Code.Data;
+﻿using System.Collections.Generic;
+using Code.Data;
+using Code.View;
 using UnityEngine;
 
 namespace Code.Factory
@@ -10,13 +12,15 @@ namespace Code.Factory
 
         private readonly GameData _gameData;
         private readonly ConstructionData _constructionData;
+        private readonly Transform _target;
 
         private bool RandomChance => Random.value > .5f;
 
-        public GameFactory(GameData gameData, ConstructionData constructionData)
+        public GameFactory(GameData gameData, ConstructionData constructionData, Transform target)
         {
             _gameData = gameData;
             _constructionData = constructionData;
+            _target = target;
         }
 
         public void Create()
@@ -35,22 +39,38 @@ namespace Code.Factory
             construction.SetParent(poolParent);
             construction.localPosition = Random.insideUnitSphere * _gameData.RadiusForSpawnConstructions;
 
+            List<ElementView> elements = CreateElements(construction);
+
+            ConstructionView constructionView = construction.gameObject.AddComponent<ConstructionView>();
+            constructionView.Init(elements, _target, _constructionData.Speed);
+        }
+
+        private List<ElementView> CreateElements(Transform prent)
+        {
+            List<ElementView> elements = new List<ElementView>();
+
             for (int x = 0; x < _constructionData.Size.x; x++)
             {
                 for (int y = 0; y < _constructionData.Size.y; y++)
                 {
                     for (int z = 0; z < _constructionData.Size.z; z++)
                     {
-                        CreateElement(construction, new Vector3Int(x, y, z));
+                        if (TryCreateElement(prent, new Vector3Int(x, y, z), out ElementView element))
+                            elements.Add(element);
                     }
                 }
             }
+
+            return elements;
         }
 
-        private void CreateElement(Transform parent, Vector3Int indexPosition)
+        private bool TryCreateElement(Transform parent, Vector3Int indexPosition, out ElementView elementView)
         {
             if (RandomChance)
-                return;
+            {
+                elementView = null;
+                return false;
+            }
 
             var element = GameObject.CreatePrimitive(_constructionData.PrimitiveType);
             element.transform.SetParent(parent);
@@ -59,6 +79,9 @@ namespace Code.Factory
             element.transform.localPosition = position;
 
             element.name = $"{_constructionData.PrimitiveType}_{position}";
+
+            elementView = element.AddComponent<ElementView>();
+            return true;
         }
 
         private Vector3 CalculateElementPosition(Vector3Int indexPosition) =>

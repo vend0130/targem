@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c04ac446d364a9087491dd937e69559, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  <NumberConstructionOnScene>k__BackingField: 2
+  <NumberConstructionOnScene>k__BackingField: 1
   <RadiusForSpawnConstructions>k__BackingField: 15

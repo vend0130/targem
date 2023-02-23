@@ -7,6 +7,7 @@ namespace Code.Data
         menuName = "Static Data/" + nameof(ConstructionData), order = 1)]
     public class ConstructionData : ScriptableObject
     {
+        [field: SerializeField] public float Speed { get; private set; } = 10;
         [field: SerializeField] public Vector3Int _size = Vector3Int.one;
         [field: SerializeField] public PrimitiveType PrimitiveType { get; private set; } = PrimitiveType.Cube;
         [field: SerializeField] public float DistanceBetweenElements { get; private set; } = 1;

@@ -8,10 +8,11 @@ namespace Code.Root
     {
         [SerializeField] private GameData _gameData;
         [SerializeField] private ConstructionData _constructionData;
+        [SerializeField] private Transform _targetPoint;
 
         private void Awake()
         {
-            var factory = new GameFactory(_gameData, _constructionData);
+            var factory = new GameFactory(_gameData, _constructionData, _targetPoint);
 
             factory.Create();
         }
