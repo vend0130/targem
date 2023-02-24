@@ -10,26 +10,30 @@ namespace Code.Views
     {
         public event Action<ElementView[]> OnCollisionHandler;
 
+        private const float Mass = 8;
+
         private List<ElementView> _elements;
         private Transform _target;
-        private float _speed;
         private ConstructionData _constructionData;
-        private Vector3 _moveSpeed;
+        private Vector3 _moveForce;
         private Vector3 _velocity;
         private bool _collidersIsActive;
         private Vector3 _rotation;
 
-        public void Init(List<ElementView> elements, Transform target, float speed, ConstructionData constructionData)
+        public void Constructor(List<ElementView> elements, Transform target, ConstructionData constructionData)
         {
             _elements = elements;
             _target = target;
-            _speed = speed;
             _constructionData = constructionData;
+        }
 
+        public void Init()
+        {
             _collidersIsActive = true;
 
-            foreach (var element in _elements)
+            for (var i = 0; i < _elements.Count; i++)
             {
+                var element = _elements[i];
                 element.Init(this);
                 element.CollisionHandler += OnCollision;
             }
@@ -40,57 +44,65 @@ namespace Code.Views
         private void FixedUpdate()
         {
             float distanceToTarget = Vector3.Distance(transform.position, _target.position);
-            if (_moveSpeed.magnitude < _constructionData.MaxForce / 2 &&
+            if (_moveForce.magnitude < _constructionData.MaxHitForce / 2 &&
                 !_collidersIsActive && distanceToTarget < _constructionData.DistanceForActivateCollider)
                 ChangeColliderState(true);
 
-            Rotation();
-            Move();
+            Rotation(Time.fixedDeltaTime);
+            Move(Time.fixedDeltaTime);
             CollisionDetect();
         }
 
         private void OnDestroy()
         {
-            _elements.ForEach(x => x.CollisionHandler -= OnCollision);
+            for (int i = 0; i < _elements.Count; i++)
+                _elements[i].CollisionHandler -= OnCollision;
         }
 
         public void AddForce(Vector3 second)
         {
             Vector3 inNormal = second - transform.position;
             Vector3 velocity = _velocity == Vector3.zero ? -inNormal : _velocity;
-            Vector3 reflect = Vector3.Reflect(velocity, inNormal).normalized;
-            _moveSpeed = reflect * Random.Range(_constructionData.MinForce, _constructionData.MaxForce);
-            _rotation = reflect + _moveSpeed.normalized;
+            Vector3 reflect = -Vector3.Reflect(velocity, inNormal).normalized;
+            _moveForce = reflect * Random.Range(_constructionData.MinHitForce, _constructionData.MaxHitForce);
+            _rotation = _moveForce + Random.rotation.eulerAngles;
         }
 
         public void ChangeColliderState(bool value)
         {
-            _elements.ForEach(x => x.Collider.enabled = value);
+            for (int i = 0; i < _elements.Count; i++)
+                _elements[i].Collider.enabled = value;
+
             _collidersIsActive = value;
         }
 
-        private void Move()
+        private void Move(float deltaTime)
         {
-            Vector3 transformPosition = transform.position;
+            Vector3 currentPosition = transform.position;
             Vector3 targetPosition = _target.position;
 
-            float forceTime = _speed / Vector3.Distance(_moveSpeed, Vector3.zero) * Time.fixedDeltaTime;
-            _moveSpeed = Vector3.Lerp(_moveSpeed, Vector3.zero, forceTime);
+            float distance = Vector3.Distance(currentPosition, targetPosition);
+            float timeGravity = deltaTime * (Mass / distance) * 2;
+            Vector3 newPosition = Vector3.Lerp(currentPosition, targetPosition, timeGravity);
 
-            Vector3 targetPoint = (targetPosition - _moveSpeed);
+            float timeForce = deltaTime / 2;
+            newPosition = Vector3.Lerp(newPosition, targetPosition + _moveForce, timeForce);
+            _moveForce = Vector3.Lerp(_moveForce, Vector3.zero, deltaTime * Mass / 2f);
 
-            float distance = Vector3.Distance(transformPosition, targetPoint);
-            float gravityTime = _speed / distance * Time.fixedDeltaTime;
-
-            transform.position = Vector3.Lerp(transformPosition, targetPoint, gravityTime);
-            _velocity = transformPosition - targetPoint;
+            transform.position = newPosition;
         }
 
-        private void Rotation() =>
-            transform.Rotate(_rotation * _constructionData.RotationSpeed * Time.fixedDeltaTime);
+        private void Rotation(float deltaTime) =>
+            transform.Rotate(_rotation * _constructionData.RotationSpeed * deltaTime);
 
-        private void CollisionDetect() =>
-            _elements.ForEach(x => x.CollisionDetect());
+        private void CollisionDetect()
+        {
+            if (!_collidersIsActive)
+                return;
+
+            for (int i = 0; i < _elements.Count; i++)
+                _elements[i].CollisionDetect();
+        }
 
         private void OnCollision(ElementView[] elements) =>
             OnCollisionHandler?.Invoke(elements);

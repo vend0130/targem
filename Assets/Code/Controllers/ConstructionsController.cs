@@ -1,8 +1,8 @@
 ﻿using System;
 using Code.Datas;
 using Code.Factories;
+using Code.Models;
 using Code.Views;
-using UnityEngine;
 
 namespace Code.Controllers
 {
@@ -10,11 +10,14 @@ namespace Code.Controllers
     {
         private readonly GameFactory _factory;
         private readonly ConstructionData _constructionData;
+        private readonly ConstructionsModel _constructionsModel;
 
-        public ConstructionsController(GameFactory factory, ConstructionData constructionData)
+        public ConstructionsController(GameFactory factory, ConstructionData constructionData,
+            ConstructionsModel constructionsModel)
         {
             _factory = factory;
             _constructionData = constructionData;
+            _constructionsModel = constructionsModel;
         }
 
         public void Init() =>
@@ -33,6 +36,8 @@ namespace Code.Controllers
 
             elements[0].Construction.AddForce(elements[1].transform.position);
             elements[1].Construction.AddForce(elements[0].transform.position);
+
+            _constructionsModel.HitCounter++;
         }
     }
 }

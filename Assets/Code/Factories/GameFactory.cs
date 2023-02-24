@@ -45,7 +45,8 @@ namespace Code.Factories
             List<ElementView> elements = CreateElements(construction);
 
             ConstructionView constructionView = construction.gameObject.AddComponent<ConstructionView>();
-            constructionView.Init(elements, _target, _constructionData.Speed, _constructionData);
+            constructionView.Constructor(elements, _target, _constructionData);
+            constructionView.Init();
 
             Constructions.Add(constructionView);
         }
@@ -87,6 +88,7 @@ namespace Code.Factories
 
             elementView = element.AddComponent<ElementView>();
             elementView.ChangeColor(_constructionData.DefaultColor);
+
             return true;
         }
 

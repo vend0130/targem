@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: GameData
   m_EditorClassIdentifier: 
   <NumberConstructionOnScene>k__BackingField: 2
-  <RadiusForSpawnConstructions>k__BackingField: 15
+  <RadiusForSpawnConstructions>k__BackingField: 30
